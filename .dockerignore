@@ -1,0 +1,18 @@
+# Docker ignore patterns
+node_modules
+npm-debug.log
+.next
+out
+.git
+.gitignore
+README.md
+.env*.local
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+coverage
+.nyc_output
