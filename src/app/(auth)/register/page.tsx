@@ -31,6 +31,15 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
+      // Map frontend role enums to backend role enums
+      const roleMap: Record<string, string> = {
+        'patient': 'patient',
+        'clinician': 'doctor',
+        'nurse': 'clinical_assistant',
+        'admin': 'super_admin',
+        'center_manager': 'clinical_admin',
+      };
+
       // Convert frontend camelCase to backend snake_case
       const backendData: BackendRegisterRequest = {
         email: data.email,
@@ -38,7 +47,7 @@ export default function RegisterPage() {
         first_name: data.firstName,
         last_name: data.lastName,
         phone: data.phone,
-        role: data.role as 'patient' | 'clinician' | 'nurse' | 'admin' | 'center_manager',
+        role: roleMap[data.role] as 'patient' | 'clinician' | 'nurse' | 'admin' | 'center_manager',
       };
 
       // Call backend register endpoint
@@ -56,15 +65,35 @@ export default function RegisterPage() {
         router.push('/login');
       }, 1500);
     } catch (error: any) {
-      console.error('Registration error:', error);
+      // Better error logging for axios/apiError shapes
+      try {
+        console.error('Registration error (raw):', error);
+        console.error('Registration error (json):', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+      } catch (e) {
+        console.error('Registration error - logging failed', e);
+      }
 
-      // Handle specific error cases
-      if (error.response?.status === 409) {
+      // Normalize possible error shapes
+      const status = error?.status || error?.response?.status || error?.statusCode;
+      const message =
+        error?.message || error?.response?.data?.detail || error?.response?.data?.message ||
+        (typeof error === 'string' ? error : null);
+
+      // Check if backend sent validation detail array (Pydantic format)
+      const detail = error?.response?.data?.detail;
+      let errorMsg = message;
+      if (Array.isArray(detail)) {
+        errorMsg = detail.map((e: any) => `${e.loc?.join('.')}: ${e.msg}`).join('; ');
+      } else if (detail && typeof detail === 'string') {
+        errorMsg = detail;
+      }
+
+      if (status === 409) {
         toast.error('Email already exists. Please try another.');
-      } else if (error.response?.status === 400) {
-        toast.error(error.response?.data?.detail || 'Invalid registration data. Please check your input.');
-      } else if (error.response?.data?.detail) {
-        toast.error(error.response.data.detail);
+      } else if (status === 400 || status === 422) {
+        toast.error(errorMsg || 'Invalid registration data. Please check your input.');
+      } else if (errorMsg) {
+        toast.error(errorMsg);
       } else {
         toast.error('Registration failed. Please try again.');
       }
