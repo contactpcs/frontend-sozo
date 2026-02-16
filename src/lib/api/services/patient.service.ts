@@ -15,8 +15,7 @@ export const patientService = {
    * Get all patients with optional filters
    */
   getAll: async (params?: PatientListParams): Promise<PaginatedResponse<Patient>> => {
-    const config = params ? { params } : undefined;
-    return api.get<PaginatedResponse<Patient>>(ENDPOINTS.PATIENTS.BASE, config);
+    return api.get<PaginatedResponse<Patient>>(ENDPOINTS.PATIENTS.BASE, { params });
   },
 
   /**

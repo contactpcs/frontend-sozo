@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '@/types';
+import type { RegisterFormData } from '@/lib/validators/auth.schema';
 
 /**
  * Session Store State Interface
@@ -11,6 +12,10 @@ interface SessionStore {
   setUser: (user: User) => void;
   clearUser: () => void;
   updateUser: (updates: Partial<User>) => void;
+  // Temporary signup state for frontend testing
+  signupData: RegisterFormData | null;
+  setSignupData: (data: RegisterFormData) => void;
+  clearSignupData: () => void;
 }
 
 /**
@@ -40,6 +45,10 @@ export const useSessionStore = create<SessionStore>()(
         set((state: SessionStore) => ({
           user: state.user ? { ...state.user, ...updates } : null,
         })),
+      // Signup testing state (NOT persisted)
+      signupData: null,
+      setSignupData: (data: RegisterFormData) => set({ signupData: data }),
+      clearSignupData: () => set({ signupData: null }),
     }),
     {
       name: 'sozo-session-storage',

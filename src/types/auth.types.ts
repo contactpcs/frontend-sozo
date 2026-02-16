@@ -1,7 +1,7 @@
 /**
  * User Roles in the System
  */
-export type UserRole = 'patient' | 'doctor' | 'reviewer' | 'admin';
+export type UserRole = 'patient' | 'clinician' | 'nurse' | 'admin' | 'center_manager';
 
 /**
  * User Type Definition

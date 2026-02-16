@@ -6,6 +6,7 @@ import type {
   RegisterData,
   User,
 } from '@/types/auth.types';
+import type { BackendRegisterRequest, BackendUserResponse } from '@/lib/validators/auth.schema';
 
 /**
  * Authentication API Service
@@ -19,7 +20,7 @@ export const authService = {
   },
 
   /**
-   * Register new user
+   * Register new user (DEPRECATED - use usersService.register instead)
    */
   register: async (data: RegisterData): Promise<AuthResponse> => {
     return api.post<AuthResponse>(ENDPOINTS.AUTH.REGISTER, data);

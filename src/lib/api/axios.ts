@@ -142,7 +142,7 @@ export const apiRequest = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   url: string,
   data?: unknown,
-  config?: InternalAxiosRequestConfig
+  config?: any
 ): Promise<T> => {
   const response = await apiClient.request<ApiResponse<T>>({
     method,
@@ -158,19 +158,19 @@ export const apiRequest = async <T>(
  * Convenience Methods
  */
 export const api = {
-  get: <T>(url: string, config?: InternalAxiosRequestConfig) =>
+  get: <T>(url: string, config?: any) =>
     apiRequest<T>('GET', url, undefined, config),
 
-  post: <T>(url: string, data?: unknown, config?: InternalAxiosRequestConfig) =>
+  post: <T>(url: string, data?: unknown, config?: any) =>
     apiRequest<T>('POST', url, data, config),
 
-  put: <T>(url: string, data?: unknown, config?: InternalAxiosRequestConfig) =>
+  put: <T>(url: string, data?: unknown, config?: any) =>
     apiRequest<T>('PUT', url, data, config),
 
-  patch: <T>(url: string, data?: unknown, config?: InternalAxiosRequestConfig) =>
+  patch: <T>(url: string, data?: unknown, config?: any) =>
     apiRequest<T>('PATCH', url, data, config),
 
-  delete: <T>(url: string, config?: InternalAxiosRequestConfig) =>
+  delete: <T>(url: string, config?: any) =>
     apiRequest<T>('DELETE', url, undefined, config),
 };
 

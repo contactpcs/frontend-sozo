@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full rounded-3xl bg-white p-8 shadow-xl">
+    <div>
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-gray-800">Welcome Back</h2>
         <p className="mt-1 text-sm text-gray-600">Sign in to your account to continue</p>

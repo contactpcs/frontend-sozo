@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { patientService } from '@/lib/api/services';
-import type { PatientPayload, PatientListParams } from '@/types';
+import type { PatientPayload, PatientListParams, PaginatedResponse, Patient } from '@/types';
 
 /**
  * Simple list fetcher hook
  */
 export function usePatients(params?: PatientListParams) {
-  const [data, setData] = useState<any[] | null>(null);
+  const [data, setData] = useState<PaginatedResponse<Patient> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 

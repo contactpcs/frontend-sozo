@@ -41,7 +41,11 @@ export const registerSchema = z
       .min(1, 'Last name is required')
       .min(2, 'Last name must be at least 2 characters')
       .max(50, 'Last name must not exceed 50 characters'),
-    role: z.enum(['patient', 'doctor', 'reviewer', 'admin']),
+    phone: z
+      .string()
+      .min(1, 'Phone number is required')
+      .regex(/^[+]?[0-9\s\-()]{10,}$/, 'Phone number must be valid'),
+    role: z.enum(['patient', 'clinician', 'nurse', 'admin', 'center_manager']),
     centerId: z.string().optional(),
   })
   .refine(
@@ -93,3 +97,31 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+
+/**
+ * Backend User Registration Request (for /users/register endpoint)
+ */
+export interface BackendRegisterRequest {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  role: 'patient' | 'clinician' | 'nurse' | 'admin' | 'center_manager';
+}
+
+/**
+ * Backend User Response
+ */
+export interface BackendUserResponse {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  role: 'patient' | 'clinician' | 'nurse' | 'admin' | 'center_manager';
+  is_active: boolean;
+  verified_email: boolean;
+  created_at: string;
+  updated_at: string;
+}

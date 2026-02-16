@@ -15,8 +15,7 @@ export const assessmentService = {
    * Get all assessments
    */
   getAll: async (params?: Record<string, unknown>): Promise<PaginatedResponse<Assessment>> => {
-    const config = params ? { params } : undefined;
-    return api.get<PaginatedResponse<Assessment>>(ENDPOINTS.ASSESSMENTS.BASE, config);
+    return api.get<PaginatedResponse<Assessment>>(ENDPOINTS.ASSESSMENTS.BASE, { params });
   },
 
   /**

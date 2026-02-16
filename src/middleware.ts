@@ -14,11 +14,6 @@ const PROTECTED_ROUTES = [
 ];
 
 /**
- * Public Routes Configuration
- */
-const PUBLIC_ROUTES = ['/', '/login', '/register', '/forgot-password'];
-
-/**
  * Auth Routes (redirect to dashboard if already authenticated)
  */
 const AUTH_ROUTES = ['/login', '/register'];

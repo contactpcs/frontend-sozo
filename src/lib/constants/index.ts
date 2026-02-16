@@ -11,9 +11,10 @@ export const APP_DESCRIPTION = 'Enterprise Healthcare SaaS Platform';
  */
 export const USER_ROLES = {
   PATIENT: 'patient',
-  DOCTOR: 'doctor',
-  REVIEWER: 'reviewer',
+  CLINICIAN: 'clinician',
+  NURSE: 'nurse',
   ADMIN: 'admin',
+  CENTER_MANAGER: 'center_manager',
 } as const;
 
 /**
@@ -21,9 +22,10 @@ export const USER_ROLES = {
  */
 export const ROLE_LABELS: Record<string, string> = {
   patient: 'Patient',
-  doctor: 'Doctor',
-  reviewer: 'Reviewer',
+  clinician: 'Clinician',
+  nurse: 'Nurse',
   admin: 'Administrator',
+  center_manager: 'Center Manager',
 };
 
 /**

@@ -55,6 +55,8 @@ export const ENDPOINTS = {
   // Users/Staff
   USERS: {
     BASE: `${API_VERSION}/users`,
+    REGISTER: `${API_VERSION}/users/register`,
+    ROLES: `${API_VERSION}/users/roles`,
     BY_ID: (id: string) => `${API_VERSION}/users/${id}`,
     PROFILE: `${API_VERSION}/users/profile`,
     UPDATE_ROLE: (id: string) => `${API_VERSION}/users/${id}/role`,

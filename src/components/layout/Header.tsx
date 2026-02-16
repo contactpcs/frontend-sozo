@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { useAuth } from '@/lib/hooks';
@@ -12,7 +11,6 @@ import { APP_NAME } from '@/lib/constants';
  */
 export function Header() {
   const { user, logout, isLogoutLoading } = useAuth();
-  const router = useRouter();
 
   const handleLogout = () => {
     logout();

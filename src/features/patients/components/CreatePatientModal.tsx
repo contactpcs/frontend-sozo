@@ -31,15 +31,10 @@ export function CreatePatientModal({ isOpen, onClose }: CreatePatientModalProps)
   });
 
   const onSubmit = (data: PatientFormData) => {
-    createPatientMutation.mutate(data, {
-      onSuccess: () => {
-        toast.success('Patient created successfully!');
-        reset();
-        onClose();
-      },
-      onError: (error: Error) => {
-        toast.error(error.message || 'Failed to create patient');
-      },
+    createPatientMutation.mutate(data, () => {
+      toast.success('Patient created successfully!');
+      reset();
+      onClose();
     });
   };
 
