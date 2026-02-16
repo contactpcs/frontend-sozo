@@ -151,7 +151,14 @@ export const apiRequest = async <T>(
     ...config,
   });
 
-  return response.data.data;
+  // Handle both wrapped and unwrapped responses
+  // If response.data has a 'data' property, return that (wrapped format)
+  // Otherwise return response.data directly (unwrapped format)
+  if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+    return (response.data as any).data;
+  }
+  
+  return response.data as T;
 };
 
 /**

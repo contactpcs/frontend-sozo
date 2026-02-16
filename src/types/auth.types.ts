@@ -19,13 +19,31 @@ export interface User {
 }
 
 /**
- * Authentication Response
+ * Authentication Response - Frontend format (camelCase)
  */
 export interface AuthResponse {
   user: User;
   accessToken: string;
   refreshToken?: string;
   expiresIn: number;
+}
+
+/**
+ * Token Response from Backend - Backend format (snake_case)
+ */
+export interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  expires_in: number;
+  user?: {
+    user_id: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: UserRole;
+    is_active: boolean;
+  };
 }
 
 /**

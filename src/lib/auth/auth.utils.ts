@@ -117,20 +117,31 @@ export function canAccessRoute(path: string, userRole: UserRole): boolean {
 
   // Role-based access control
   const roleRoutes: Record<UserRole, string[]> = {
-    patient: ['/dashboard', '/dashboard/assessments', '/dashboard/settings'],
-    doctor: [
+    patient: ['/dashboard', '/dashboard/assessments', '/dashboard/settings','/dashboard/patients'],
+    clinician: [
       '/dashboard',
       '/dashboard/patients',
       '/dashboard/assessments',
       '/dashboard/settings',
     ],
-    reviewer: ['/dashboard', '/dashboard/review', '/dashboard/settings'],
+    nurse: [
+      '/dashboard',
+      '/dashboard/patients',
+      '/dashboard/assessments',
+      '/dashboard/settings',
+    ],
     admin: [
       '/dashboard',
       '/dashboard/patients',
       '/dashboard/assessments',
       '/dashboard/review',
       '/dashboard/admin',
+      '/dashboard/settings',
+    ],
+    center_manager: [
+      '/dashboard',
+      '/dashboard/patients',
+      '/dashboard/assessments',
       '/dashboard/settings',
     ],
   };

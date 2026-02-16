@@ -1,27 +1,26 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header, Sidebar } from '@/components/layout';
 import { PageLoader } from '@/components/ui';
 import { useAuth } from '@/lib/hooks';
 
-/**
- * Dashboard Layout
- * Protected layout with sidebar and header
- */
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { user, isLoading, isAuthenticated } = useAuth();
 
-  // Show loader while checking authentication
+  useEffect(() => {
+    if (!isLoading && (!isAuthenticated || !user)) {
+      router.push('/login');
+    }
+  }, [isLoading, isAuthenticated, user, router]);
+
   if (isLoading) {
     return <PageLoader />;
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated || !user) {
-    router.push('/login');
     return null;
   }
 

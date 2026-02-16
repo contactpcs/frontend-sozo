@@ -8,9 +8,9 @@ const API_VERSION = '/v1';
 export const ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: `${API_VERSION}/auth/login`,
-    REGISTER: `${API_VERSION}/auth/register`,
-    LOGOUT: `${API_VERSION}/auth/logout`,
+    LOGIN: `${API_VERSION}/users/login`,
+    REGISTER: `${API_VERSION}/users/register`,
+    LOGOUT: `${API_VERSION}/users/logout`,
     REFRESH: `${API_VERSION}/auth/refresh`,
     ME: `${API_VERSION}/auth/me`,
     VERIFY_EMAIL: `${API_VERSION}/auth/verify-email`,

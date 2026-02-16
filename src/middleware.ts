@@ -6,11 +6,6 @@ import type { NextRequest } from 'next/server';
  */
 const PROTECTED_ROUTES = [
   '/dashboard',
-  '/dashboard/patients',
-  '/dashboard/assessments',
-  '/dashboard/review',
-  '/dashboard/admin',
-  '/dashboard/settings',
 ];
 
 /**
@@ -41,7 +36,7 @@ export function middleware(request: NextRequest) {
 
   // Redirect to dashboard if accessing auth routes while authenticated
   if (isAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL('/dashboard/patients', request.url));
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // Allow request to proceed

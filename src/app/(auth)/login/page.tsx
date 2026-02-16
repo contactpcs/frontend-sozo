@@ -86,15 +86,7 @@ export default function LoginPage() {
           {loginMutation.isPending ? 'Signing in...' : 'Sign in'}
         </button>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Don&apos;t have an account?{' '}
-          <Link
-            href="/register"
-            className="font-semibold text-orange-500 hover:text-orange-600"
-          >
-            Sign up
-          </Link>
-        </div>
+        
 
         <div className="mt-6 text-center text-xs text-gray-500">
           By continuing, you agree to Sozo&apos;s{' '}

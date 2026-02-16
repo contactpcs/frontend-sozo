@@ -12,24 +12,21 @@ import { setSignupData } from '@/store/redux/slices/authSlice';
 import { usersService } from '@/lib/api/services';
 import { useState } from 'react';
 import type { BackendRegisterRequest } from '@/lib/validators/auth.schema';
-import { Calendar } from 'lucide-react';
 
 /**
- * Register Page - Receptionist Onboarding
+ * Register Page
  */
 export default function RegisterPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGuardian, setIsGuardian] = useState(false);
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
@@ -76,37 +73,26 @@ export default function RegisterPage() {
     }
   };
 
-  return (
-    <div className="space-y-8">
-      <div className="space-y-1">
-        <h1 className="text-center text-2xl font-semibold text-zinc-950">
-          Let&apos;s set up your account
-        </h1>
-      </div>
+  const roleOptions = Object.entries(ROLE_LABELS).map(([value, label]) => ({
+    value,
+    label,
+  }));
 
-      {/* Guardian Checkbox */}
-      <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          id="is-guardian"
-          checked={isGuardian}
-          onChange={(e) => setIsGuardian(e.target.checked)}
-          className="h-6 w-6 cursor-pointer accent-orange-500"
-        />
-        <label htmlFor="is-guardian" className="cursor-pointer text-base font-normal text-black">
-          Check if you&apos;re a relative/guardian of the patient
-        </label>
+  return (
+    <div className="w-full rounded-3xl bg-white p-8 shadow-xl">
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-gray-800">Let&apos;s set up your account</h2>
+        <p className="mt-1 text-sm text-gray-600">Get started with Sozo Healthcare</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        {/* Full Name & Email in Grid */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <input
               type="text"
-              placeholder="Full name"
+              placeholder="First Name"
               disabled={isLoading}
-              className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-950 placeholder-zinc-700 transition-colors focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
               {...register('firstName')}
             />
             {errors.firstName && (
@@ -116,115 +102,115 @@ export default function RegisterPage() {
 
           <div>
             <input
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="Last Name"
               disabled={isLoading}
-              className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-950 placeholder-zinc-700 transition-colors focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-              {...register('email')}
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+              {...register('lastName')}
             />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+            {errors.lastName && (
+              <p className="mt-1 text-xs text-red-500">{errors.lastName.message}</p>
             )}
           </div>
         </div>
 
-        {/* Phone Number */}
         <div>
-          <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2.5">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-normal text-zinc-600">🇺🇸</span>
-              <span className="text-sm font-normal text-zinc-600">+1</span>
-            </div>
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              disabled={isLoading}
-              className="flex-1 bg-white text-sm text-zinc-950 placeholder-zinc-700 outline-none disabled:cursor-not-allowed disabled:opacity-60"
-              {...register('phone')}
-            />
-          </div>
+          <input
+            type="email"
+            placeholder="Email"
+            disabled={isLoading}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            {...register('email')}
+          />
+          {errors.email && (
+            <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div>
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            disabled={isLoading}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            {...register('phone')}
+          />
           {errors.phone && (
             <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>
           )}
         </div>
 
-        {/* Date of Birth */}
         <div>
-          <div className="relative flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2.5">
-            <input
-              type="date"
-              disabled={isLoading}
-              className="flex-1 bg-white text-sm text-zinc-700 placeholder-zinc-700 outline-none disabled:cursor-not-allowed disabled:opacity-60"
-              {...register('phone')}
-            />
-            <Calendar size={20} className="pointer-events-none text-zinc-600" />
-          </div>
-          <p className="mt-1 text-xs text-zinc-600">Date of Birth</p>
+          <select
+            disabled={isLoading}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            {...register('role')}
+          >
+            <option value="">Select Role</option>
+            {roleOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {errors.role && (
+            <p className="mt-1 text-xs text-red-500">{errors.role.message}</p>
+          )}
         </div>
 
-        {/* Country & City */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <select
-              disabled={isLoading}
-              className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-700 transition-colors focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Country
-              </option>
-              <option value="us">United States</option>
-              <option value="ca">Canada</option>
-              <option value="uk">United Kingdom</option>
-            </select>
-          </div>
-
-          <div>
-            <select
-              disabled={isLoading}
-              className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-700 transition-colors focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                City
-              </option>
-              <option value="ny">New York</option>
-              <option value="la">Los Angeles</option>
-              <option value="chicago">Chicago</option>
-            </select>
-          </div>
+        <div>
+          <input
+            type="password"
+            placeholder="Password"
+            disabled={isLoading}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            {...register('password')}
+          />
+          {errors.password && (
+            <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+          )}
         </div>
 
-        {/* Next Button */}
+        <div>
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            disabled={isLoading}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            {...register('confirmPassword')}
+          />
+          {errors.confirmPassword && (
+            <p className="mt-1 text-xs text-red-500">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-[24px] bg-[#F47920] px-4 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-
-          {isLoading ? 'Processing...' : 'Next'}
+          className="w-full rounded-lg bg-orange-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isLoading ? 'Creating Account...' : 'Create Account'}
         </button>
 
-        {/* Sign In Link */}
-        <div className="text-center text-sm text-zinc-600">
+        <div className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-zinc-950 hover:underline">
+          <Link
+            href="/login"
+            className="font-semibold text-orange-500 hover:text-orange-600"
+          >
             Sign in
           </Link>
         </div>
 
-        {/* Terms Footer */}
-        <div className="text-center text-xs text-zinc-600">
-          <p>
-            By continuing, you agree to Sozo&apos;s{' '}
-            <Link href="/terms" className="text-zinc-950 underline hover:no-underline">
-              Terms & conditions
-            </Link>{' '}
-            and{' '}
-            <Link href="/privacy" className="text-zinc-950 underline hover:no-underline">
-              Privacy Policy
-            </Link>
-          </p>
+        <div className="mt-6 text-center text-xs text-gray-500">
+          By continuing, you agree to Sozo&apos;s{' '}
+          <Link href="/terms" className="underline hover:text-gray-700">
+            Terms & conditions
+          </Link>{' '}
+          and{' '}
+          <Link href="/privacy" className="underline hover:text-gray-700">
+            Privacy Policy
+          </Link>
         </div>
       </form>
     </div>
