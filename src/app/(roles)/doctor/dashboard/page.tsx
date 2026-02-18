@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Bell, HelpCircle } from 'lucide-react';
+import { Search, Bell, HelpCircle, LogOut } from 'lucide-react';
 import { Card } from '@/components/ui';
 import { usePatients } from '@/lib/hooks';
 import { useAuth } from '@/lib/hooks';
@@ -77,6 +77,7 @@ export default function PatientsDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   // Use session store so values mapped from backend/profile are available
   const { user } = useAuth();
+  const { logout } = useAuth();
   const storedUser = useSessionStore((s) => s.user);
 
   const { data: patientsData, isLoading } = usePatients({
@@ -93,6 +94,14 @@ export default function PatientsDashboardPage() {
 
   const doctorName = (storedUser?.firstName || user?.firstName) ?? 'James';
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
       {/* Top Navigation Bar */}
@@ -105,6 +114,13 @@ export default function PatientsDashboardPage() {
           <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
             3
           </span>
+        </button>
+        <button 
+          onClick={handleLogout}
+          className="p-3 hover:bg-red-50 rounded-full transition-colors group"
+          title="Logout"
+        >
+          <LogOut className="w-6 h-6 text-gray-600 group-hover:text-red-600" />
         </button>
       </div>
 

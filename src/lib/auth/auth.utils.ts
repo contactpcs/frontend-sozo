@@ -115,41 +115,69 @@ export function canAccessRoute(path: string, userRole: UserRole): boolean {
   const publicRoutes = ['/', '/login', '/register', '/forgot-password'];
   if (publicRoutes.includes(path)) return true;
 
-  // Role-based access control
+  // Role-based access control - more specific matching
   const roleRoutes: Record<UserRole, string[]> = {
-    patient: ['/dashboard', '/dashboard/assessments', '/dashboard/settings','/dashboard/patients'],
-    clinician: [
-      '/dashboard',
-      '/dashboard/patients',
-      '/dashboard/assessments',
-      '/dashboard/settings',
+    patient: ['/patient/dashboard', '/patient/assessments', '/patient/settings'],
+    doctor: [
+      '/doctor/dashboard',
+      '/doctor/assessments',
+      '/doctor/settings',
     ],
     nurse: [
-      '/dashboard',
-      '/dashboard/patients',
-      '/dashboard/assessments',
+      '/doctor/dashboard',
+      '/patient/dashboard',
+      '/doctor/assessments',
+      '/patient/assessments',
       '/dashboard/settings',
     ],
     admin: [
-      '/dashboard',
-      '/dashboard/patients',
-      '/dashboard/assessments',
+      '/doctor/dashboard',
+      '/patient/dashboard',
+      '/doctor/assessments',
+      '/patient/assessments',
       '/dashboard/review',
       '/dashboard/admin',
       '/dashboard/settings',
     ],
     center_manager: [
-      '/dashboard',
-      '/dashboard/patients',
-      '/dashboard/assessments',
+      '/doctor/dashboard',
+      '/patient/dashboard',
+      '/doctor/assessments',
+      '/patient/assessments',
       '/dashboard/settings',
     ],
   };
 
   const allowedRoutes = roleRoutes[userRole] || [];
   
-  // Check if path starts with any allowed route
-  return allowedRoutes.some((route) => path.startsWith(route));
+  // Check exact match first
+  if (allowedRoutes.includes(path)) {
+    return true;
+  }
+  
+  // Check if path is a sub-route of any allowed route
+  return allowedRoutes.some((route) => {
+    if (route === '/dashboard') {
+      // Special handling for dashboard root - only allow exact match or approved sub-routes
+      return path === '/dashboard' || allowedRoutes.some(r => r !== '/dashboard' && path.startsWith(r));
+    }
+    return path.startsWith(route + '/');
+  });
+}
+
+/**
+ * Get role-specific dashboard route
+ */
+export function getRoleDashboardRoute(userRole: UserRole): string {
+  const roleDashboardRoutes: Record<UserRole, string> = {
+    patient: '/patient/dashboard',
+    doctor: '/doctor/dashboard',
+    nurse: '/doctor/dashboard',
+    admin: '/doctor/dashboard',
+    center_manager: '/doctor/dashboard',
+  };
+
+  return roleDashboardRoutes[userRole] || '/doctor/dashboard';
 }
 
 /**

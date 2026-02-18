@@ -43,7 +43,7 @@ export function PatientList({ patients, isLoading }: PatientListProps) {
   return (
     <div className="space-y-4">
       {patients.map((patient) => (
-        <Link key={patient.id} href={`/dashboard/patients/${patient.id}`}>
+        <Link key={patient.id} href={`/doctor/dashboard/${patient.id}`}>
           <Card className="transition-shadow hover:shadow-medium">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">

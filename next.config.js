@@ -55,15 +55,6 @@ const nextConfig = {
   },
 
   // Redirects
-  async redirects() {
-    return [
-      {
-        source: '/dashboard',
-        destination: '/dashboard/patients',
-        permanent: true,
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;

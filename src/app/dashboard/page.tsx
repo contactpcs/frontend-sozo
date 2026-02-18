@@ -1,22 +1,56 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Users, FileText, Activity, TrendingUp } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui';
 import { useAuth } from '@/lib/hooks';
+import { getRoleDashboardRoute } from '@/lib/auth/auth.utils';
+import { useSessionStore } from '@/store/sessionStore';
 
 /**
  * Dashboard Home Page
  */
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+  const storedUser = useSessionStore((s) => s.user);
+
+  // Redirect to role-specific dashboard if user has specific role
+  useEffect(() => {
+    // Use stored user data if available for immediate redirect when navigating back
+    const currentUser = user || storedUser;
+    
+    if (currentUser?.role) {
+      const roleDashboard = getRoleDashboardRoute(currentUser.role);
+      console.log(`User role: ${currentUser.role}, Dashboard mapping: ${roleDashboard}`);
+      // Only redirect if it's not the current dashboard route to avoid infinite loops
+      if (roleDashboard !== '/dashboard') {
+        console.log(`Redirecting to: ${roleDashboard}`);
+        router.replace(roleDashboard);
+        return;
+      }
+    }
+  }, [user, storedUser, router]);
+
+  // While loading or redirecting, show nothing
+  if (isLoading && !storedUser) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
+
+  // If user is being redirected, show loading state
+  const currentUser = user || storedUser;
+  if (currentUser?.role && getRoleDashboardRoute(currentUser.role) !== '/dashboard') {
+    return <div className="text-center py-8">Redirecting to your dashboard...</div>;
+  }
 
   const stats = [
     {
       label: 'Total Patients',
       value: '1,234',
       icon: Users,
-      href: '/dashboard/patients',
+      href: '/patient/dashboard',
       color: 'text-primary-600',
       bgColor: 'bg-primary-100',
     },

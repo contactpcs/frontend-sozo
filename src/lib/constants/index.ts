@@ -143,7 +143,9 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   DASHBOARD: '/dashboard',
-  PATIENTS: '/dashboard/patients',
+  PATIENTS: '/patient/dashboard',
+  DOCTOR_DASHBOARD: '/doctor/dashboard',
+  PATIENT_DASHBOARD: '/patient/dashboard',
   ASSESSMENTS: '/dashboard/assessments',
   REVIEW: '/dashboard/review',
   ADMIN: '/dashboard/admin',
@@ -156,7 +158,10 @@ export const ROUTES = {
  */
 export const PROTECTED_ROUTES = [
   '/dashboard',
-  '/dashboard/patients',
+  '/doctor',
+  '/patient',
+  '/doctor/dashboard',
+  '/patient/dashboard',
   '/dashboard/assessments',
   '/dashboard/review',
   '/dashboard/admin',
@@ -172,17 +177,15 @@ export const PUBLIC_ROUTES = ['/', '/login', '/register', '/forgot-password'];
  * Role-based Route Access
  */
 export const ROLE_ROUTES: Record<string, string[]> = {
-  patient: ['/dashboard', '/dashboard/assessments', '/dashboard/settings'],
+  patient: ['/patient/dashboard'],
   doctor: [
-    '/dashboard',
-    '/dashboard/patients',
-    '/dashboard/assessments',
-    '/dashboard/settings',
+    '/doctor/dashboard'
   ],
   reviewer: ['/dashboard', '/dashboard/review', '/dashboard/settings'],
   admin: [
     '/dashboard',
-    '/dashboard/patients',
+    '/doctor/dashboard',
+    '/patient/dashboard',
     '/dashboard/assessments',
     '/dashboard/review',
     '/dashboard/admin',

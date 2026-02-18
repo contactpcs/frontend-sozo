@@ -19,12 +19,6 @@ export const ENDPOINTS = {
   },
 
   // Patients
-  PATIENTS: {
-    BASE: `${API_VERSION}/patients`,
-    BY_ID: (id: string) => `${API_VERSION}/patients/${id}`,
-    ASSESSMENTS: (id: string) => `${API_VERSION}/patients/${id}/assessments`,
-    HISTORY: (id: string) => `${API_VERSION}/patients/${id}/history`,
-  },
 
   // Assessments
   ASSESSMENTS: {
@@ -49,7 +43,7 @@ export const ENDPOINTS = {
     BASE: `${API_VERSION}/centers`,
     BY_ID: (id: string) => `${API_VERSION}/centers/${id}`,
     STAFF: (id: string) => `${API_VERSION}/centers/${id}/staff`,
-    PATIENTS: (id: string) => `${API_VERSION}/centers/${id}/patients`,
+    PATIENTS: (id: string) => `${API_VERSION}/centers/${id}/patient`,
   },
 
   // Users/Staff

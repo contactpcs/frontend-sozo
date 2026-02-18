@@ -25,7 +25,7 @@ export default function PatientDetailPage() {
     return (
       <div className="text-center">
         <h1 className="text-2xl font-bold text-neutral-900">Patient not found</h1>
-        <Link href="/dashboard/patients" className="mt-4 inline-block text-primary-600">
+        <Link href="/patient/dashboard" className="mt-4 inline-block text-primary-600">
           Back to patients
         </Link>
       </div>
@@ -36,7 +36,7 @@ export default function PatientDetailPage() {
     <div>
       {/* Back Button */}
       <Link
-        href="/dashboard/patients"
+        href="/patient/dashboard"
         className="mb-6 inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />

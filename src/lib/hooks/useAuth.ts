@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/lib/api/services';
-import { setAuthToken, clearAuth } from '@/lib/auth';
+import { setAuthToken, clearAuth, getRoleDashboardRoute } from '@/lib/auth';
 import type { LoginCredentials, RegisterData } from '@/types';
 import { useSessionStore } from '@/store/sessionStore';
 
@@ -95,17 +95,9 @@ export function useLogin() {
         setUser(data.user);
       }
       
-      // Redirect based on user role
+      // Redirect to role-specific dashboard
       const userRole = data.user?.role || 'patient';
-      const roleRoutes: Record<string, string> = {
-        patient: '/dashboard/assessments',
-        clinician: '/dashboard/patients',
-        nurse: '/dashboard/patients',
-        admin: '/dashboard/admin',
-        center_manager: '/dashboard/patients',
-      };
-      
-      const redirectPath = roleRoutes[userRole] || '/dashboard/patients';
+      const redirectPath = getRoleDashboardRoute(userRole as any);
       router.push(redirectPath);
       
       return data;
@@ -139,17 +131,9 @@ export function useRegister() {
         setUser(data.user);
       }
       
-      // Redirect based on user role
+      // Redirect to role-specific dashboard
       const userRole = data.user?.role || 'patient';
-      const roleRoutes: Record<string, string> = {
-        patient: '/dashboard/assessments',
-        clinician: '/dashboard/patients',
-        nurse: '/dashboard/patients',
-        admin: '/dashboard/admin',
-        center_manager: '/dashboard/patients',
-      };
-      
-      const redirectPath = roleRoutes[userRole] || '/dashboard/patients';
+      const redirectPath = getRoleDashboardRoute(userRole as any);
       router.push(redirectPath);
       
       return data;

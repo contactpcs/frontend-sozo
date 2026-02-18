@@ -6,6 +6,8 @@ import type { NextRequest } from 'next/server';
  */
 const PROTECTED_ROUTES = [
   '/dashboard',
+  '/doctor',
+  '/patient',
 ];
 
 /**
@@ -19,6 +21,15 @@ const AUTH_ROUTES = ['/login', '/register'];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
+  // Skip middleware for static assets and API routes
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/api/') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
+  }
+  
   // Get auth token from cookie
   const authToken = request.cookies.get('sozo_auth_token')?.value;
   const isAuthenticated = !!authToken;
@@ -30,13 +41,24 @@ export function middleware(request: NextRequest) {
   // Redirect to login if accessing protected route without authentication
   if (isProtectedRoute && !isAuthenticated) {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', pathname);
+    // Only add redirect param for specific dashboard routes
+    if (pathname !== '/dashboard') {
+      loginUrl.searchParams.set('redirect', pathname);
+    }
     return NextResponse.redirect(loginUrl);
   }
 
   // Redirect to dashboard if accessing auth routes while authenticated
   if (isAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    // For authenticated users accessing auth routes, redirect to their role-specific dashboard
+    // Note: We can't easily get user role in middleware, so redirect to a generic route that will handle role-based routing
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  // Handle root route redirect for authenticated users
+  if (pathname === '/' && isAuthenticated) {
+    // The main page.tsx will handle role-based redirection
+    return NextResponse.next();
   }
 
   // Allow request to proceed
