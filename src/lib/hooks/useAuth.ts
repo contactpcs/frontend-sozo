@@ -1,171 +1,134 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { authService } from '@/lib/api/services';
-import { setAuthToken, clearAuth, getRoleDashboardRoute } from '@/lib/auth';
+import { clearAuth, getRoleDashboardRoute } from '@/lib/auth';
 import type { LoginCredentials, RegisterData } from '@/types';
-import { useSessionStore } from '@/store/sessionStore';
+import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  getCurrentUser,
+} from '@/store/redux/slices/authSlice';
+import { useState } from 'react';
 
 /**
- * Simple hook to fetch current user without React Query
+ * Simple hook to get current user from Redux
  */
 export function useCurrentUser() {
-  const setUser = useSessionStore((s) => s.setUser);
-  const storedUser = useSessionStore((s) => s.user);
-  const [data, setData] = useState<any | null>(storedUser ?? null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const dispatch = useAppDispatch();
+  const { user, isLoading, loginError: error, isAuthenticated } = useAppSelector(
+    (state) => state.auth
+  );
 
-  useEffect(() => {
-    let mounted = true;
-    setIsLoading(true);
-    // Fetch latest profile and update session store
-    authService
-      .getCurrentUser()
-      .then((res) => {
-        if (!mounted) return;
+  const refetch = useCallback(async () => {
+    await dispatch(getCurrentUser());
+  }, [dispatch]);
 
-        // Map backend snake_case to frontend User shape
-        const mapped = {
-          id: (res as any).id || (res as any).user_id || '',
-          email: (res as any).email || '',
-          firstName: (res as any).first_name || (res as any).firstName || '',
-          lastName: (res as any).last_name || (res as any).lastName || '',
-          role: (res as any).role || 'patient',
-          centerId: (res as any).center_id || (res as any).centerId,
-          isActive: (res as any).is_active !== false,
-          createdAt: (res as any).created_at || new Date().toISOString(),
-          updatedAt: (res as any).updated_at || new Date().toISOString(),
-        } as any;
-
-        setData(mapped);
-        setUser(mapped);
-      })
-      .catch((err) => {
-        if (mounted) setError(err instanceof Error ? err : new Error(String(err)));
-      })
-      .finally(() => {
-        if (mounted) setIsLoading(false);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return { data, isLoading, error, refetch: async () => {
-    setIsLoading(true);
-    try {
-      const res = await authService.getCurrentUser();
-      setData(res);
-      setError(null);
-      return res;
-    } catch (e) {
-      setError(e as Error);
-      throw e;
-    } finally {
-      setIsLoading(false);
-    }
-  } };
+  return { data: user, isLoading, error: error ? new Error(error) : null, refetch, isAuthenticated };
 }
 
 /**
- * Login helper
+ * Hook to handle user login via Redux
  */
 export function useLogin() {
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const setUser = useSessionStore((state) => state.setUser);
-  const [isPending, setIsPending] = useState(false);
+  const { isAuthenticated, loginError, isLoginLoading } = useAppSelector(
+    (state) => state.auth
+  );
 
-  const mutate = useCallback(async (credentials: LoginCredentials) => {
-    setIsPending(true);
-    try {
-      const data = await authService.login(credentials);
-      
-      // Store tokens
-      setAuthToken(data.accessToken);
-      if (data.refreshToken && typeof window !== 'undefined') {
-        localStorage.setItem('refresh_token', data.refreshToken);
-        localStorage.setItem('access_token', data.accessToken);
+  const mutate = useCallback(
+    async (credentials: LoginCredentials) => {
+      try {
+        const result = await dispatch(loginUser(credentials));
+        
+        if (loginUser.fulfilled.match(result)) {
+          const user = result.payload;
+          const dashboardRoute = getRoleDashboardRoute(user.role);
+          router.push(dashboardRoute);
+          return result.payload;
+        } else if (loginUser.rejected.match(result)) {
+          throw new Error(result.payload as string);
+        }
+      } catch (error) {
+        throw error;
       }
-      
-      // Store user data
-      if (data.user) {
-        setUser(data.user);
-      }
-      
-      // Redirect to role-specific dashboard
-      const userRole = data.user?.role || 'patient';
-      const redirectPath = getRoleDashboardRoute(userRole as any);
-      router.push(redirectPath);
-      
-      return data;
-    } finally {
-      setIsPending(false);
-    }
-  }, [router, setUser]);
+    },
+    [dispatch, router]
+  );
 
-  return { mutate, isPending };
+  return {
+    mutate,
+    isPending: isLoginLoading,
+    isLoading: isLoginLoading,
+    error: loginError ? new Error(loginError) : null,
+    isSuccess: isAuthenticated,
+  };
 }
 
+/**
+ * Hook to handle user registration via Redux
+ */
 export function useRegister() {
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const setUser = useSessionStore((state) => state.setUser);
-  const [isPending, setIsPending] = useState(false);
+  const { isAuthenticated, loginError, isLoginLoading } = useAppSelector(
+    (state) => state.auth
+  );
 
-  const mutate = useCallback(async (payload: RegisterData) => {
-    setIsPending(true);
-    try {
-      const data = await authService.register(payload);
-      
-      // Store tokens
-      setAuthToken(data.accessToken);
-      if (data.refreshToken && typeof window !== 'undefined') {
-        localStorage.setItem('refresh_token', data.refreshToken);
-        localStorage.setItem('access_token', data.accessToken);
+  const mutate = useCallback(
+    async (payload: RegisterData) => {
+      try {
+        const result = await dispatch(registerUser(payload));
+        
+        if (registerUser.fulfilled.match(result)) {
+          const user = result.payload;
+          const dashboardRoute = getRoleDashboardRoute(user.role);
+          router.push(dashboardRoute);
+          return result.payload;
+        } else if (registerUser.rejected.match(result)) {
+          throw new Error(result.payload as string);
+        }
+      } catch (error) {
+        throw error;
       }
-      
-      // Store user data
-      if (data.user) {
-        setUser(data.user);
-      }
-      
-      // Redirect to role-specific dashboard
-      const userRole = data.user?.role || 'patient';
-      const redirectPath = getRoleDashboardRoute(userRole as any);
-      router.push(redirectPath);
-      
-      return data;
-    } finally {
-      setIsPending(false);
-    }
-  }, [router, setUser]);
+    },
+    [dispatch, router]
+  );
 
-  return { mutate, isPending };
+  return {
+    mutate,
+    isPending: isLoginLoading,
+    isLoading: isLoginLoading,
+    error: loginError ? new Error(loginError) : null,
+    isSuccess: isAuthenticated,
+  };
 }
 
+/**
+ * Hook to handle user logout via Redux
+ */
 export function useLogout() {
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const clearUser = useSessionStore((s) => s.clearUser);
-  const [isPending, setIsPending] = useState(false);
+  const { isLoginLoading } = useAppSelector((state) => state.auth);
 
   const mutate = useCallback(async () => {
-    setIsPending(true);
     try {
-      await authService.logout();
-    } catch (e) {
-      // ignore error, still clear local auth
-    } finally {
+      await dispatch(logoutUser());
       clearAuth();
-      clearUser();
-      try { if (typeof window !== 'undefined') localStorage.removeItem('refresh_token'); } catch {}
       router.push('/login');
-      setIsPending(false);
+    } catch (error) {
+      // Still clear auth even if logout fails
+      clearAuth();
+      router.push('/login');
+      throw error;
     }
-  }, [router, clearUser]);
+  }, [dispatch, router]);
 
-  return { mutate, isPending };
+  return { mutate, isPending: isLoginLoading };
 }
 
 export function useAuth() {

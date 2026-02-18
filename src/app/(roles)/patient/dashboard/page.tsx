@@ -10,8 +10,7 @@ import { useSessionStore } from '@/store/sessionStore';
  * Patient Dashboard Page
  */
 export default function PatientsDashboardPage() {
-  const { user } = useAuth();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const storedUser = useSessionStore((s) => s.user);
  
   const [selectedAssessment, setSelectedAssessment] = useState('fnon');

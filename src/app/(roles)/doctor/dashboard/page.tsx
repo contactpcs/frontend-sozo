@@ -76,8 +76,7 @@ function PatientCard({ patient }: { patient: any }) {
 export default function PatientsDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   // Use session store so values mapped from backend/profile are available
-  const { user } = useAuth();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();  // ✓ FIXED: Single call to useAuth()
   const storedUser = useSessionStore((s) => s.user);
 
   const { data: patientsData, isLoading } = usePatients({
