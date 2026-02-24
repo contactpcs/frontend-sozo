@@ -26,3 +26,5 @@ export type { LoaderProps } from './Loader';
 
 export { Modal, ModalFooter } from './Modal';
 export type { ModalProps } from './Modal';
+
+export { Tabs } from './Tabs';

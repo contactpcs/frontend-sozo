@@ -79,6 +79,12 @@ const getRoleSpecificNavItems = (userRole: UserRole): NavItem[] => {
         icon: Users,
         roles: ['doctor'],
       },
+      {
+        label: 'Anamnesis',
+        href: '/doctor/anamnesis',
+        icon: ClipboardList,
+        roles: ['doctor'],
+      },
       ...baseItems
     ];
   } else {
