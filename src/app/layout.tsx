@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ToastProvider } from '@/lib/providers';
 import { ReduxProvider } from '@/store/redux';
+import { AuthInitializer } from '@/components/providers/AuthInitializer';
 import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -20,9 +21,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.variable}>
         <ReduxProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+          <AuthInitializer>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </AuthInitializer>
         </ReduxProvider>
       </body>
     </html>

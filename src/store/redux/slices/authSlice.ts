@@ -2,21 +2,12 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { RegisterFormData } from '@/lib/validators/auth.schema';
 import { authService } from '@/lib/api/services';
 import { setAuthToken } from '@/lib/auth';
+import type { User as AuthUser } from '@/types/auth.types';
 
 /**
- * User Type
+ * User Type (using the shared auth type)
  */
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  centerId?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+export type User = AuthUser;
 
 /**
  * Auth Redux Slice State
