@@ -3,7 +3,8 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { clearAuth, getRoleDashboardRoute } from '@/lib/auth';
-import type { LoginCredentials, RegisterData } from '@/types';
+import type { LoginCredentials } from '@/types';
+import type { RegisterFormData } from '@/lib/validators/auth.schema';
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
 import {
   loginUser,
@@ -11,7 +12,7 @@ import {
   logoutUser,
   getCurrentUser,
 } from '@/store/redux/slices/authSlice';
-import { useState } from 'react';
+import { useSessionStore } from '@/store/sessionStore';
 
 /**
  * Simple hook to get current user from Redux
@@ -35,6 +36,7 @@ export function useCurrentUser() {
 export function useLogin() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const setUser = useSessionStore((state) => state.setUser);
   const { isAuthenticated, loginError, isLoginLoading } = useAppSelector(
     (state) => state.auth
   );
@@ -45,18 +47,21 @@ export function useLogin() {
         const result = await dispatch(loginUser(credentials));
         
         if (loginUser.fulfilled.match(result)) {
-          const user = result.payload;
+          const user = result.payload.user;
+          // Update sessionStore to persist user data across reloads
+          setUser(user);
           const dashboardRoute = getRoleDashboardRoute(user.role);
           router.push(dashboardRoute);
           return result.payload;
         } else if (loginUser.rejected.match(result)) {
           throw new Error(result.payload as string);
         }
+        throw new Error('Unknown login error');
       } catch (error) {
         throw error;
       }
     },
-    [dispatch, router]
+    [dispatch, router, setUser]
   );
 
   return {
@@ -74,28 +79,32 @@ export function useLogin() {
 export function useRegister() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const setUser = useSessionStore((state) => state.setUser);
   const { isAuthenticated, loginError, isLoginLoading } = useAppSelector(
     (state) => state.auth
   );
 
   const mutate = useCallback(
-    async (payload: RegisterData) => {
+    async (payload: RegisterFormData) => {
       try {
         const result = await dispatch(registerUser(payload));
         
         if (registerUser.fulfilled.match(result)) {
-          const user = result.payload;
+          const user = result.payload.user;
+          // Update sessionStore to persist user data across reloads
+          setUser(user);
           const dashboardRoute = getRoleDashboardRoute(user.role);
           router.push(dashboardRoute);
           return result.payload;
         } else if (registerUser.rejected.match(result)) {
           throw new Error(result.payload as string);
         }
+        throw new Error('Unknown registration error');
       } catch (error) {
         throw error;
       }
     },
-    [dispatch, router]
+    [dispatch, router, setUser]
   );
 
   return {
@@ -113,20 +122,23 @@ export function useRegister() {
 export function useLogout() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const clearUser = useSessionStore((state) => state.clearUser);
   const { isLoginLoading } = useAppSelector((state) => state.auth);
 
   const mutate = useCallback(async () => {
     try {
       await dispatch(logoutUser());
       clearAuth();
+      clearUser();
       router.push('/login');
     } catch (error) {
       // Still clear auth even if logout fails
       clearAuth();
+      clearUser();
       router.push('/login');
       throw error;
     }
-  }, [dispatch, router]);
+  }, [dispatch, router, clearUser]);
 
   return { mutate, isPending: isLoginLoading };
 }
