@@ -42,7 +42,7 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="Email"
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-[#00A1E4] focus:outline-none focus:ring-2 focus:ring-[#00A1E4]/20"
             {...register('email')}
           />
           {errors.email && (
@@ -54,7 +54,7 @@ export default function LoginPage() {
           <input
             type="password"
             placeholder="Password"
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-[#00A1E4] focus:outline-none focus:ring-2 focus:ring-[#00A1E4]/20"
             {...register('password')}
           />
           {errors.password && (
@@ -66,13 +66,14 @@ export default function LoginPage() {
           <label className="flex items-center">
             <input
               type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-2 focus:ring-orange-500/20"
+              className="h-4 w-4 rounded border-gray-300 text-[#00A1E4] focus:ring-2 focus:ring-[#00A1E4]/20"
             />
             <span className="ml-2 text-gray-600">Remember me</span>
           </label>
           <Link
             href="/forgot-password"
-            className="font-medium text-orange-500 hover:text-orange-600"
+            className="font-medium"
+            style={{ background: "linear-gradient(108deg, #00A1E4 0%, #09172E 99.51%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
           >
             Forgot password?
           </Link>
@@ -81,7 +82,8 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loginMutation.isPending}
-          className="w-full rounded-lg bg-orange-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg px-4 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
+          style={{ background: "linear-gradient(108deg, #00A1E4 0%, #09172E 99.51%)" }}
         >
           {loginMutation.isPending ? 'Signing in...' : 'Sign in'}
         </button>

@@ -7,14 +7,14 @@ import Image from 'next/image';
  */
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen gap-2.5 p-5" style={{ backgroundImage: "linear-gradient(119.97deg, rgb(0, 164, 234) 0%, rgb(255, 112, 0) 99.51%)" }}>
+    <div className="flex min-h-screen gap-2.5 p-5" style={{ background: "linear-gradient(108deg, #00A1E4 0%, #09172E 99.51%)" }}>
       {/* Left Side - Form */}
       <div className="flex w-full items-center justify-center rounded-3xl bg-white px-6 lg:w-1/2 lg:px-12 lg:py-12">
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 flex justify-center">
             <Image
-              src="/logo1.png"
+              src="/logo1-v2.png"
               alt="SOZO Brain Center"
               width={171}
               height={60}
@@ -39,7 +39,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Center Logo */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <Image
-            src="/logo1.png"
+            src="/logo1-v2.png"
             alt="SOZO"
             width={89}
             height={89}

@@ -72,6 +72,14 @@
 }
 
 @layer utilities {
+  /* Button gradient */
+  .btn-gradient {
+    background: linear-gradient(108deg, #00A1E4 0%, #09172E 99.51%);
+  }
+  .btn-gradient:hover {
+    opacity: 0.9;
+  }
+
   /* Text gradients */
   .text-gradient {
     @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
