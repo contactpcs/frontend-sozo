@@ -216,7 +216,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-lg bg-orange-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg btn-gradient px-4 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isLoading ? 'Creating Account...' : 'Create Account'}
         </button>
@@ -225,7 +225,8 @@ export default function RegisterPage() {
           Already have an account?{' '}
           <Link
             href="/login"
-            className="font-semibold text-orange-500 hover:text-orange-600"
+            className="font-semibold"
+            style={{ background: "linear-gradient(108deg, #00A1E4 0%, #09172E 99.51%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
           >
             Sign in
           </Link>

@@ -186,7 +186,7 @@ export default function PatientDetailPage() {
                 <p className="text-xs text-gray-500">Next Activity</p>
                 <p className="text-sm font-semibold text-gray-900">{patient.nextActivity || 'Tomorrow, Brain Mapping'}</p>
               </div>
-              <Button className="ml-4 bg-orange-500 hover:bg-orange-600 text-white px-6">
+              <Button className="ml-4 btn-gradient hover:opacity-90 text-white px-6">
                 Schedule
               </Button>
             </div>
@@ -422,7 +422,7 @@ export default function PatientDetailPage() {
                   <p className="text-sm text-gray-500 mb-4">
                     This assessment hasn&apos;t been completed yet. Schedule it for the patient&apos;s next visit.
                   </p>
-                  <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                  <Button className="btn-gradient hover:opacity-90 text-white">
                     Schedule Assessment
                   </Button>
                 </div>

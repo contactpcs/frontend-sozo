@@ -453,7 +453,7 @@ export function AnamnesisTab({ patientName }: { patientName?: string }) {
       <div className="flex justify-center mt-2 mb-8">
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold px-8 py-3.5 rounded-lg transition-all shadow-sm"
+          className="flex items-center gap-2 btn-gradient hover:opacity-90 text-white font-bold px-8 py-3.5 rounded-lg transition-all shadow-sm"
         >
           <Save className="w-5 h-5" />
           {saved ? 'Saved!' : 'Save Anamnesis Form'}
