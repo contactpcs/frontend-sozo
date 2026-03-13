@@ -1,10 +1,11 @@
 'use client';
- 
+
 import { useState } from 'react';
-import { Search, Phone, ChevronDown, Lock, HelpCircle, Bell, LogOut } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { ArrowLeft, Phone, ChevronDown, Lock, HelpCircle, Bell, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui';
+import { usePatient } from '@/lib/hooks';
 import { useAuth } from '@/lib/hooks';
-import { useAssignedDoctor } from '@/lib/hooks/usePatients';
 import { useSessionStore } from '@/store/sessionStore';
 
 /**
@@ -15,20 +16,90 @@ function getInitials(firstName?: string, lastName?: string): string {
   const last = (lastName || '').charAt(0).toUpperCase();
   return `${first}${last}` || 'DR';
 }
- 
-/**
- * Patient Dashboard Page
- */
-export default function PatientsDashboardPage() {
-  const { user, logout } = useAuth();
+
+const DUMMY_PATIENTS: Record<string, any> = {
+  'dummy-1': {
+    id: 'dummy-1',
+    firstName: 'Andrea',
+    lastName: 'Mitchell',
+    dateOfBirth: '1985-06-15',
+    medicalRecordNumber: 'MRN-00123',
+    phone: '+1 310 555 0101',
+    status: 'active',
+    condition: 'Cognitive Fatigue',
+    nextActivity: 'Tomorrow, Brain Mapping',
+    doctor: { initials: 'DJ', name: 'Dr. James', clinic: 'Seventh Adventist Clinic, LA', phone: '+1 723747 90000' },
+    fnon: { score: 32, improvement: '+20%', duration: '45 mins', completedBy: 'Dr. James', completedOn: '24 Jan, 2026', activities: ['Crossword', 'Toe Touch', 'Walking', 'Sudoku', 'Balance Test'] },
+  },
+  'dummy-2': {
+    id: 'dummy-2',
+    firstName: 'Robert',
+    lastName: 'Chen',
+    dateOfBirth: '1972-03-22',
+    medicalRecordNumber: 'MRN-00124',
+    phone: '+1 213 555 0202',
+    status: 'active',
+    condition: 'Mild Memory Loss',
+    nextActivity: 'Thursday, FNON Assessment',
+    doctor: { initials: 'DJ', name: 'Dr. James', clinic: 'Seventh Adventist Clinic, LA', phone: '+1 723747 90000' },
+    fnon: { score: 28, improvement: '+15%', duration: '50 mins', completedBy: 'Dr. James', completedOn: '18 Jan, 2026', activities: ['Walking', 'Sudoku', 'Memory Cards', 'Balance Test'] },
+  },
+  'dummy-3': {
+    id: 'dummy-3',
+    firstName: 'Sarah',
+    lastName: 'Thompson',
+    dateOfBirth: '1990-11-08',
+    medicalRecordNumber: 'MRN-00125',
+    phone: '+1 424 555 0303',
+    status: 'active',
+    condition: 'Anxiety & Focus Issues',
+    nextActivity: 'Friday, Brain Mapping',
+    doctor: { initials: 'DJ', name: 'Dr. James', clinic: 'Seventh Adventist Clinic, LA', phone: '+1 723747 90000' },
+    fnon: { score: 41, improvement: '+28%', duration: '40 mins', completedBy: 'Dr. James', completedOn: '20 Jan, 2026', activities: ['Crossword', 'Breathing Exercises', 'Walking', 'Sudoku'] },
+  },
+  'dummy-4': {
+    id: 'dummy-4',
+    firstName: 'James',
+    lastName: 'Williams',
+    dateOfBirth: '1968-04-30',
+    medicalRecordNumber: 'MRN-00126',
+    phone: '+1 818 555 0404',
+    status: 'active',
+    condition: 'Post-Stroke Recovery',
+    nextActivity: 'Monday, PRS Evaluation',
+    doctor: { initials: 'DJ', name: 'Dr. James', clinic: 'Seventh Adventist Clinic, LA', phone: '+1 723747 90000' },
+    fnon: { score: 19, improvement: '+8%', duration: '60 mins', completedBy: 'Dr. James', completedOn: '15 Jan, 2026', activities: ['Toe Touch', 'Walking', 'Balance Test', 'Speech Therapy'] },
+  },
+  'dummy-5': {
+    id: 'dummy-5',
+    firstName: 'Maria',
+    lastName: 'Garcia',
+    dateOfBirth: '1995-09-17',
+    medicalRecordNumber: 'MRN-00127',
+    phone: '+1 562 555 0505',
+    status: 'active',
+    condition: 'ADHD & Focus',
+    nextActivity: 'Wednesday, Clinical Assessment',
+    doctor: { initials: 'DJ', name: 'Dr. James', clinic: 'Seventh Adventist Clinic, LA', phone: '+1 723747 90000' },
+    fnon: { score: 37, improvement: '+22%', duration: '45 mins', completedBy: 'Dr. James', completedOn: '22 Jan, 2026', activities: ['Crossword', 'Sudoku', 'Memory Cards', 'Focus Training'] },
+  },
+};
+
+export default function PatientDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { logout, user } = useAuth();
   const storedUser = useSessionStore((s) => s.user);
-  const { doctor, isLoading: isDoctorLoading } = useAssignedDoctor();
- 
+  const patientId = params.id as string;
+
   const [selectedAssessment, setSelectedAssessment] = useState('fnon');
   const [basicExpanded, setBasicExpanded] = useState(true);
- 
-  // Get patient name from auth
-  const patientName = storedUser?.firstName || user?.firstName || 'Andrea';
+
+  // Try API first, fall back to dummy data
+  const { data: apiPatient, isLoading } = usePatient(
+    patientId.startsWith('dummy-') ? undefined : patientId
+  );
+  const patient = apiPatient || DUMMY_PATIENTS[patientId];
 
   const handleLogout = async () => {
     try {
@@ -38,21 +109,72 @@ export default function PatientsDashboardPage() {
     }
   };
 
- 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="animate-spin w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full" />
+      </div>
+    );
+  }
+
+  if (!patient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Patient not found</h1>
+          <button
+            onClick={() => router.push('/doctor/dashboard')}
+            className="text-purple-600 hover:underline flex items-center gap-2 mx-auto"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Get logged-in doctor's information
+  const doctorFirstName = storedUser?.firstName || user?.firstName || 'James';
+  const doctorLastName = storedUser?.lastName || user?.lastName || '';
+  const doctorEmail = storedUser?.email || user?.email || 'doctor@clinic.com';
+  const doctorInitials = getInitials(doctorFirstName, doctorLastName);
+  const doctorFullName = `Dr. ${doctorFirstName} ${doctorLastName}`.trim();
+  
+  const doc = {
+    initials: doctorInitials,
+    name: doctorFullName,
+    clinic: 'Seventh Adventist Clinic, LA',
+    phone: doctorEmail
+  };
+  
+  // Update fnon data with logged-in doctor's name
+  const fnon = {
+    ...(patient.fnon || {}),
+    completedBy: doctorFullName
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50">
       <div className="max-w-[1600px] mx-auto p-6">
         {/* Top Header */}
         <div className="flex items-start justify-between gap-6 mb-8">
-          {/* Left: Welcome & Next Activity */}
+          {/* Left: Back button + Welcome */}
           <div className="flex-1">
+            <button
+              onClick={() => router.push('/doctor/dashboard')}
+              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
+            </button>
             <h1 className="text-2xl font-semibold text-gray-900 mb-1">
-              Hello {patientName} 👋
+              {patient.firstName} {patient.lastName} 👤
             </h1>
             <p className="text-sm text-gray-600 mb-6">
-              Here&apos;s everything you need for your doctor&apos;s visit
+              {patient.medicalRecordNumber} &nbsp;·&nbsp; {patient.condition || 'Neurological Assessment'}
             </p>
- 
+
             {/* Next Activity Card */}
             <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm inline-flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -62,27 +184,16 @@ export default function PatientsDashboardPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-500">Next Activity</p>
-                <p className="text-sm font-semibold text-gray-900">Tomorrow, Brain Mapping</p>
+                <p className="text-sm font-semibold text-gray-900">{patient.nextActivity || 'Tomorrow, Brain Mapping'}</p>
               </div>
               <Button className="ml-4 bg-orange-500 hover:bg-orange-600 text-white px-6">
-                Book Appointment
+                Schedule
               </Button>
             </div>
           </div>
- 
-          {/* Right: Search & Doctor Info */}
+
+          {/* Right: Icons + Doctor Info */}
           <div className="flex items-start gap-4">
-            {/* Search Bar */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search patients, schedule, courses, equipments, etc"
-                className="w-[420px] pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            </div>
- 
-            {/* Icons */}
             <button className="p-3 hover:bg-white rounded-full transition-colors">
               <HelpCircle className="w-5 h-5 text-gray-600" />
             </button>
@@ -90,59 +201,34 @@ export default function PatientsDashboardPage() {
               <Bell className="w-5 h-5 text-gray-600" />
               <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">3</span>
             </button>
-            <button 
+            <button
               onClick={handleLogout}
               className="p-3 hover:bg-red-50 rounded-full transition-colors group"
               title="Logout"
             >
               <LogOut className="w-5 h-5 text-gray-600 group-hover:text-red-600" />
             </button>
- 
+
             {/* Doctor Info Card */}
             <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex items-center gap-4 min-w-[300px]">
-              {isDoctorLoading ? (
-                <div className="flex items-center gap-4 w-full">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-24 animate-pulse" />
-                    <div className="h-3 bg-gray-200 rounded w-32 animate-pulse" />
-                  </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                {doc.initials}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900">{doc.name}</p>
+                <p className="text-xs text-gray-500">{doc.clinic}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <Phone className="w-3 h-3 text-gray-400" />
+                  <p className="text-xs text-gray-600">{doc.phone}</p>
                 </div>
-              ) : doctor ? (
-                <>
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    {getInitials(doctor.firstName, doctor.lastName)}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-900">Dr. {doctor.firstName} {doctor.lastName}</p>
-                    <p className="text-xs text-gray-500">Professional Healthcare Provider</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Phone className="w-3 h-3 text-gray-400" />
-                      <p className="text-xs text-gray-600">{doctor.email || 'Contact available'}</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Make Payment
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-semibold">
-                    ?
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-900">No Assigned Doctor</p>
-                    <p className="text-xs text-gray-500">Please contact your clinic</p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Make Payment
-                  </Button>
-                </>
-              )}
+              </div>
+              <Button variant="outline" size="sm">
+                Add Note
+              </Button>
             </div>
           </div>
         </div>
- 
+
         {/* Tabs */}
         <div className="flex gap-1 mb-0">
           <button className="px-6 py-3 bg-gray-900 text-white rounded-t-lg font-medium text-sm">
@@ -156,7 +242,7 @@ export default function PatientsDashboardPage() {
             Follow Up Assessment 1
           </button>
         </div>
- 
+
         {/* Main Content */}
         <div className="flex bg-white rounded-b-lg rounded-tr-lg shadow-lg overflow-hidden min-h-[650px]">
           {/* Left Sidebar */}
@@ -170,12 +256,12 @@ export default function PatientsDashboardPage() {
                 <span>Basic</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${basicExpanded ? 'rotate-180' : ''}`} />
               </button>
- 
+
               {basicExpanded && (
                 <div className="space-y-1">
                   {/* Anamnesis */}
                   <button
-                    onClick={() => setSelectedAssessment('anamnesis')}
+                    onClick={() => router.push(`/doctor/patients/${patientId}/anamnesis`)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       selectedAssessment === 'anamnesis' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50 text-gray-700'
                     }`}
@@ -191,7 +277,7 @@ export default function PatientsDashboardPage() {
                       Done
                     </span>
                   </button>
- 
+
                   {/* FNON */}
                   <button
                     onClick={() => setSelectedAssessment('fnon')}
@@ -210,7 +296,7 @@ export default function PatientsDashboardPage() {
                       Done
                     </span>
                   </button>
- 
+
                   {/* Brain Mapping */}
                   <button
                     onClick={() => setSelectedAssessment('brain_mapping')}
@@ -224,7 +310,7 @@ export default function PatientsDashboardPage() {
                     <span className="flex-1 text-left text-sm font-medium">Brain Mapping</span>
                     <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">Pending</span>
                   </button>
- 
+
                   {/* PRS */}
                   <button
                     onClick={() => setSelectedAssessment('prs')}
@@ -241,7 +327,7 @@ export default function PatientsDashboardPage() {
                 </div>
               )}
             </div>
- 
+
             {/* Locked Sections */}
             <div className="space-y-2">
               <div className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400">
@@ -262,7 +348,7 @@ export default function PatientsDashboardPage() {
               </div>
             </div>
           </div>
- 
+
           {/* Right Content Area */}
           <div className="flex-1 p-8">
             {selectedAssessment === 'fnon' && (
@@ -275,37 +361,37 @@ export default function PatientsDashboardPage() {
                       <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
-                      <span>completed on 24 Jan, 2026</span>
+                      <span>completed on {fnon.completedOn || '24 Jan, 2026'}</span>
                     </div>
                   </div>
                   <Button variant="outline">View Detailed Report</Button>
                 </div>
- 
+
                 {/* Metrics Grid */}
                 <div className="grid grid-cols-4 gap-4 mb-8">
                   <div className="p-4 bg-gray-50 rounded-lg">
                     <p className="text-xs text-gray-600 mb-1">FNON Score</p>
-                    <p className="text-2xl font-bold text-gray-900">32</p>
+                    <p className="text-2xl font-bold text-gray-900">{fnon.score ?? 32}</p>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg">
                     <p className="text-xs text-gray-600 mb-1">Improvement</p>
-                    <p className="text-2xl font-bold text-green-700">+20%</p>
+                    <p className="text-2xl font-bold text-green-700">{fnon.improvement ?? '+20%'}</p>
                   </div>
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <p className="text-xs text-gray-600 mb-1">Duration</p>
-                    <p className="text-2xl font-bold text-blue-700">45 mins</p>
+                    <p className="text-2xl font-bold text-blue-700">{fnon.duration ?? '45 mins'}</p>
                   </div>
                   <div className="p-4 bg-purple-50 rounded-lg">
                     <p className="text-xs text-gray-600 mb-1">Completed by</p>
-                    <p className="text-lg font-semibold text-purple-700">Dr. James</p>
+                    <p className="text-lg font-semibold text-purple-700">{fnon.completedBy ?? 'Dr. James'}</p>
                   </div>
                 </div>
- 
+
                 {/* Activities */}
                 <div>
                   <h3 className="text-sm font-semibold text-gray-700 mb-3">Activities Performed</h3>
                   <div className="flex flex-wrap gap-2">
-                    {['Crossword', 'Toe Touch', 'Walking', 'Sudoku', 'Balance Test'].map((activity) => (
+                    {(fnon.activities || ['Crossword', 'Toe Touch', 'Walking', 'Sudoku', 'Balance Test']).map((activity: string) => (
                       <span key={activity} className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
                         {activity}
                       </span>
@@ -314,7 +400,7 @@ export default function PatientsDashboardPage() {
                 </div>
               </div>
             )}
- 
+
             {selectedAssessment === 'anamnesis' && (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -323,7 +409,7 @@ export default function PatientsDashboardPage() {
                 </div>
               </div>
             )}
- 
+
             {(selectedAssessment === 'brain_mapping' || selectedAssessment === 'prs') && (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center max-w-md">
@@ -334,14 +420,17 @@ export default function PatientsDashboardPage() {
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Assessment Pending</h3>
                   <p className="text-sm text-gray-500 mb-4">
-                    This assessment hasn&apos;t been completed yet. Your doctor will complete it during your next visit.
+                    This assessment hasn&apos;t been completed yet. Schedule it for the patient&apos;s next visit.
                   </p>
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                    Schedule Assessment
+                  </Button>
                 </div>
               </div>
             )}
           </div>
         </div>
- 
+
         {/* Footer */}
         <div className="mt-8 text-center text-sm text-gray-500">
           © Copyright 2026 SOZO Brain Center
@@ -350,4 +439,3 @@ export default function PatientsDashboardPage() {
     </div>
   );
 }
- 

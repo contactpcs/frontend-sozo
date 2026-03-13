@@ -1,16 +1,60 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, Bell, HelpCircle, LogOut } from 'lucide-react';
 import { Card } from '@/components/ui';
 import { usePatients } from '@/lib/hooks';
 import { useAuth } from '@/lib/hooks';
 import { useSessionStore } from '@/store/sessionStore';
 
+const DUMMY_PATIENTS = [
+  {
+    id: 'dummy-1',
+    firstName: 'Andrea',
+    lastName: 'Mitchell',
+    dateOfBirth: '1985-06-15',
+    medicalRecordNumber: 'MRN-00123',
+    status: 'active',
+  },
+  {
+    id: 'dummy-2',
+    firstName: 'Robert',
+    lastName: 'Chen',
+    dateOfBirth: '1972-03-22',
+    medicalRecordNumber: 'MRN-00124',
+    status: 'active',
+  },
+  {
+    id: 'dummy-3',
+    firstName: 'Sarah',
+    lastName: 'Thompson',
+    dateOfBirth: '1990-11-08',
+    medicalRecordNumber: 'MRN-00125',
+    status: 'active',
+  },
+  {
+    id: 'dummy-4',
+    firstName: 'James',
+    lastName: 'Williams',
+    dateOfBirth: '1968-04-30',
+    medicalRecordNumber: 'MRN-00126',
+    status: 'active',
+  },
+  {
+    id: 'dummy-5',
+    firstName: 'Maria',
+    lastName: 'Garcia',
+    dateOfBirth: '1995-09-17',
+    medicalRecordNumber: 'MRN-00127',
+    status: 'active',
+  },
+];
+
 /**
  * Patient Card Component
  */
-function PatientCard({ patient }: { patient: any }) {
+function PatientCard({ patient, onClick }: { patient: any; onClick?: () => void }) {
   const getAge = (dateOfBirth: string) => {
     const birthDate = new Date(dateOfBirth);
     const today = new Date();
@@ -30,7 +74,10 @@ function PatientCard({ patient }: { patient: any }) {
   };
 
   return (
-    <div className="flex gap-3 items-center w-full">
+    <div
+      className="flex gap-3 items-center w-full cursor-pointer hover:opacity-80 transition-opacity"
+      onClick={onClick}
+    >
       {/* Avatar */}
       <div className="relative rounded-full shrink-0 w-[52px] h-[52px] bg-gray-200 overflow-hidden flex items-center justify-center">
         <div className="w-full h-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white font-semibold text-sm">
@@ -75,6 +122,7 @@ function PatientCard({ patient }: { patient: any }) {
  */
 export default function PatientsDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
   // Use session store so values mapped from backend/profile are available
   const { user, logout } = useAuth();  // ✓ FIXED: Single call to useAuth()
   const storedUser = useSessionStore((s) => s.user);
@@ -85,11 +133,13 @@ export default function PatientsDashboardPage() {
     limit: 10,
   });
 
-  // Get recently accessed patients (for demo, using first patients)
-  const recentPatients = useMemo(
-    () => patientsData?.data?.slice(0, 6) || [],
-    [patientsData?.data]
-  );
+  // Get recently accessed patients; fall back to dummy data when API returns empty
+  const recentPatients = useMemo(() => {
+    const apiPatients = patientsData?.data?.slice(0, 6) || [];
+    if (apiPatients.length > 0) return apiPatients;
+    if (searchQuery) return [];
+    return DUMMY_PATIENTS;
+  }, [patientsData?.data, searchQuery]);
 
   const doctorName = (storedUser?.firstName || user?.firstName) ?? 'James';
 
@@ -162,7 +212,10 @@ export default function PatientsDashboardPage() {
           ) : recentPatients.length > 0 ? (
             recentPatients.map((patient) => (
               <div key={patient.id} className="pb-6 last:pb-0 last:border-b-0 border-b border-gray-100">
-                <PatientCard patient={patient} />
+                <PatientCard
+                  patient={patient}
+                  onClick={() => router.push(`/doctor/patients/${patient.id}`)}
+                />
               </div>
             ))
           ) : (

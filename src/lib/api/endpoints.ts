@@ -19,6 +19,13 @@ export const ENDPOINTS = {
   },
 
   // Patients
+  PATIENTS: {
+    BASE: `${API_VERSION}/patients`,
+    BY_ID: (id: string) => `${API_VERSION}/patients/${id}`,
+    MY_PROFILE: `${API_VERSION}/patients/me/profile`,
+    ASSESSMENTS: (id: string) => `${API_VERSION}/patients/${id}/assessments`,
+    HISTORY: (id: string) => `${API_VERSION}/patients/${id}/history`,
+  },
 
   // Assessments
   ASSESSMENTS: {

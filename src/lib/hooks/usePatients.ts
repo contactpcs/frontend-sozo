@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { patientService } from '@/lib/api/services';
-import type { PatientPayload, PatientListParams, PaginatedResponse, Patient } from '@/types';
+import { patientService, usersService } from '@/lib/api/services';
+import type { PatientPayload, PatientListParams, PaginatedResponse, Patient, User } from '@/types';
 
 /**
  * Simple list fetcher hook
@@ -152,4 +152,76 @@ export function usePatientAssessments(id?: string) {
       throw e;
     } finally { setIsLoading(false); }
   } };
+}
+
+/**
+ * Hook to fetch the current patient's assigned doctor
+ */
+export function useAssignedDoctor() {
+  const [doctor, setDoctor] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setIsLoading(true);
+
+    const fetchAssignedDoctor = async () => {
+      try {
+        // Fetch current patient's profile
+        const patient = await patientService.getMyProfile();
+        
+        if (!patient.assignedDoctorId) {
+          if (mounted) {
+            setDoctor(null);
+            setError(null);
+          }
+          return;
+        }
+
+        // Fetch doctor details using assigned doctor ID
+        const doctorData = await usersService.getUserProfile(patient.assignedDoctorId);
+        if (mounted) {
+          setDoctor(doctorData as any as User);
+          setError(null);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err : new Error(String(err)));
+          setDoctor(null);
+        }
+      }
+    };
+
+    fetchAssignedDoctor().finally(() => {
+      if (mounted) setIsLoading(false);
+    });
+
+    return () => { mounted = false; };
+  }, []);
+
+  return {
+    doctor,
+    isLoading,
+    error,
+    refetch: async () => {
+      setIsLoading(true);
+      try {
+        const patient = await patientService.getMyProfile();
+        if (patient.assignedDoctorId) {
+          const doctorData = await usersService.getUserProfile(patient.assignedDoctorId);
+          setDoctor(doctorData as any as User);
+          setError(null);
+        } else {
+          setDoctor(null);
+        }
+        return patient.assignedDoctorId ? (doctor as User) : null;
+      } catch (e) {
+        setError(e as Error);
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+  };
 }

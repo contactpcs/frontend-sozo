@@ -12,6 +12,13 @@ import type {
  */
 export const patientService = {
   /**
+   * Get current patient's profile
+   */
+  getMyProfile: async (): Promise<Patient> => {
+    return api.get<Patient>(ENDPOINTS.PATIENTS.MY_PROFILE);
+  },
+
+  /**
    * Get all patients with optional filters
    */
   getAll: async (params?: PatientListParams): Promise<PaginatedResponse<Patient>> => {
