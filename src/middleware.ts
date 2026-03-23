@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
   }
   
   // Get auth token from cookie
-  const authToken = request.cookies.get('sozo_auth_token')?.value;
+  const authToken = request.cookies.get('neurowellness_auth_token')?.value;
   const isAuthenticated = !!authToken;
 
   // Check if route is protected

@@ -6,7 +6,7 @@ import { STORAGE_KEYS } from '@/lib/constants';
  * Cookie Configuration
  */
 const COOKIE_CONFIG = {
-  AUTH_TOKEN: process.env.NEXT_PUBLIC_AUTH_COOKIE_NAME || 'sozo_auth_token',
+  AUTH_TOKEN: process.env.NEXT_PUBLIC_AUTH_COOKIE_NAME || 'neurowellness_auth_token',
   EXPIRES_IN_DAYS: 7,
   SECURE: process.env.NODE_ENV === 'production',
   SAME_SITE: 'strict' as const,

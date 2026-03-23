@@ -111,7 +111,7 @@ export default function RegisterPage() {
     <div className="w-full rounded-3xl bg-white p-8 shadow-xl">
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-gray-800">Let&apos;s set up your account</h2>
-        <p className="mt-1 text-sm text-gray-600">Get started with Sozo Healthcare</p>
+        <p className="mt-1 text-sm text-gray-600">Get started with Neurowellness Healthcare</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -233,7 +233,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="mt-6 text-center text-xs text-gray-500">
-          By continuing, you agree to Sozo&apos;s{' '}
+          By continuing, you agree to Neurowellness&apos;s{' '}
           <Link href="/terms" className="underline hover:text-gray-700">
             Terms & conditions
           </Link>{' '}

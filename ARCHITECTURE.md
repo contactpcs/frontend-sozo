@@ -1,4 +1,4 @@
-# Sozo Healthcare Platform - Architecture Guide
+# Neurowellness Healthcare Platform - Architecture Guide
 
 ## 🏛️ Architectural Philosophy
 
@@ -244,7 +244,7 @@ apiClient.interceptors.request.use((config) => {
 ```typescript
 // middleware.ts
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('sozo_auth_token');
+  const token = request.cookies.get('neurowellness_auth_token');
   const isProtected = PROTECTED_ROUTES.includes(pathname);
   
   if (isProtected && !token) {

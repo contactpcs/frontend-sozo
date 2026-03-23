@@ -20,11 +20,11 @@ cp .env.example .env
 Then edit `.env` with your configuration:
 
 ```env
-NEXT_PUBLIC_APP_NAME=Sozo Healthcare Platform
+NEXT_PUBLIC_APP_NAME=Neurowellness Healthcare Platform
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
 NEXT_PUBLIC_API_TIMEOUT=30000
-NEXT_PUBLIC_AUTH_COOKIE_NAME=sozo_auth_token
+NEXT_PUBLIC_AUTH_COOKIE_NAME=neurowellness_auth_token
 ```
 
 ### 3. Run Development Server

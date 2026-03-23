@@ -1,4 +1,4 @@
-# Sozo Healthcare Platform - Frontend
+# Neurowellness Healthcare Platform - Frontend
 
 > **Enterprise-grade Next.js healthcare SaaS platform built for scale, maintainability, and long-term evolution**
 
@@ -29,7 +29,7 @@
 
 ## 🎯 Overview
 
-# Sozo Healthcare Platform — Frontend
+# Neurowellness Healthcare Platform — Frontend
 
 > Enterprise-grade Next.js healthcare SaaS platform built for scale, maintainability, and long-term evolution.
 
@@ -60,7 +60,7 @@
 
 ## 🎯 Overview
 
-Sozo Healthcare Platform is a production-ready, enterprise-scale frontend application designed to support healthcare workflows for patients, clinicians, reviewers, and administrators.
+Neurowellness Healthcare Platform is a production-ready, enterprise-scale frontend application designed to support healthcare workflows for patients, clinicians, reviewers, and administrators.
 
 ### Key Features
 
@@ -124,7 +124,7 @@ Installation
 
 ```bash
 git clone <repository-url>
-cd "SOZO Frontend/SOZO-CRM" # or your cloned folder
+cd "NEUROWELLNESS Frontend/NEUROWELLNESS-CRM" # or your cloned folder
 npm install
 cp .env.example .env
 # Edit .env with your API URL and settings
@@ -219,8 +219,8 @@ Features are self-contained under `features/<name>/` with `components/`, `hooks/
 Example Docker workflow:
 
 ```bash
-docker build -t sozo-frontend .
-docker run -p 3000:3000 sozo-frontend
+docker build -t neurowellness-frontend .
+docker run -p 3000:3000 neurowellness-frontend
 ```
 
 Production checklist: envs configured, endpoints verified, monitoring enabled.

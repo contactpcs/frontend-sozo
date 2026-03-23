@@ -116,7 +116,7 @@ export const useUIStore = create<UIStore>()(
       setGlobalLoading: (loading: boolean) => set({ isGlobalLoading: loading }),
     }),
     {
-      name: 'sozo-ui-storage',
+      name: 'neurowellness-ui-storage',
       partialize: (state: UIStore) => ({
         theme: state.theme,
         sidebar: state.sidebar,

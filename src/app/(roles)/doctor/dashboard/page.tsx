@@ -228,7 +228,7 @@ export default function PatientsDashboardPage() {
 
       {/* Footer */}
       <div className="mt-12 text-center text-sm text-gray-500">
-        © Copyright 2026 SOZO Brain Center
+        © Copyright 2026 Neurowellness Brain Center
       </div>
     </div>
   );

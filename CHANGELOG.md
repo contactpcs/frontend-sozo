@@ -187,7 +187,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Notes
 
-This is the foundation release of the Sozo Healthcare Platform frontend. The architecture is designed to support multi-year evolution with minimal breaking changes.
+This is the foundation release of the Neurowellness Healthcare Platform frontend. The architecture is designed to support multi-year evolution with minimal breaking changes.
 
 ### Upgrade Path
 
@@ -202,4 +202,4 @@ Future breaking changes will include detailed migration guides.
 
 ---
 
-**For detailed changes in each release, see the [git commit history](https://github.com/your-org/sozo-frontend/commits/main).**
+**For detailed changes in each release, see the [git commit history](https://github.com/your-org/neurowellness-frontend/commits/main).**

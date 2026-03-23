@@ -51,7 +51,7 @@ export const useSessionStore = create<SessionStore>()(
       clearSignupData: () => set({ signupData: null }),
     }),
     {
-      name: 'sozo-session-storage',
+      name: 'neurowellness-session-storage',
       partialize: (state: SessionStore) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

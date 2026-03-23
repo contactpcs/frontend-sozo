@@ -2,7 +2,7 @@
  * Application Constants
  */
 
-export const APP_NAME = 'Sozo Healthcare Platform';
+export const APP_NAME = 'Neurowellness Healthcare Platform';
 export const APP_VERSION = '1.0.0';
 export const APP_DESCRIPTION = 'Enterprise Healthcare SaaS Platform';
 

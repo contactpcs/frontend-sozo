@@ -2,7 +2,7 @@
 
 ## 👋 Welcome
 
-Thank you for contributing to Sozo Healthcare Platform!
+Thank you for contributing to Neurowellness Healthcare Platform!
 
 ---
 

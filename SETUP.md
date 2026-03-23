@@ -21,7 +21,7 @@ npm --version   # Should be >= 9.0.0
 
 ```bash
 git clone <repository-url>
-cd sozo-healthcare-platform
+cd neurowellness-healthcare-platform
 ```
 
 #### 3. Install Dependencies
@@ -47,7 +47,7 @@ Edit `.env`:
 ```env
 # Required Variables
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
-NEXT_PUBLIC_APP_NAME=Sozo Healthcare Platform
+NEXT_PUBLIC_APP_NAME=Neurowellness Healthcare Platform
 
 # Optional Variables
 NEXT_PUBLIC_ENABLE_DEBUG=true
@@ -249,7 +249,7 @@ chore: update dependencies
 ### Build Image
 
 ```bash
-docker build -t sozo-frontend .
+docker build -t neurowellness-frontend .
 ```
 
 ### Run Container
@@ -257,7 +257,7 @@ docker build -t sozo-frontend .
 ```bash
 docker run -p 3000:3000 \
   -e NEXT_PUBLIC_API_URL=http://api:8000 \
-  sozo-frontend
+  neurowellness-frontend
 ```
 
 ### Docker Compose

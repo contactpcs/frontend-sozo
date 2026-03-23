@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="mb-8 flex justify-center">
             <Image
               src="/logo1-v2.png"
-              alt="SOZO Brain Center"
+              alt="Neurowellness Brain Center"
               width={171}
               height={60}
               priority
@@ -40,7 +40,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <Image
             src="/logo1-v2.png"
-            alt="SOZO"
+            alt="Neurowellness"
             width={89}
             height={89}
             className="h-auto w-auto opacity-90"

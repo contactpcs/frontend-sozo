@@ -91,7 +91,7 @@ export default function LoginPage() {
         
 
         <div className="mt-6 text-center text-xs text-gray-500">
-          By continuing, you agree to Sozo&apos;s{' '}
+          By continuing, you agree to Neurowellness&apos;s{' '}
           <Link href="/terms" className="underline hover:text-gray-700">
             Terms & conditions
           </Link>{' '}
