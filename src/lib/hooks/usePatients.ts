@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { patientService, usersService } from '@/lib/api/services';
+import { useAuth } from './useAuth';
 import type { PatientPayload, PatientListParams, PaginatedResponse, Patient, User } from '@/types';
 
 /**
@@ -161,9 +162,23 @@ export function useAssignedDoctor() {
   const [doctor, setDoctor] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     let mounted = true;
+    
+    // Only attempt to fetch if user is a patient
+    const isPatient = user?.role === 'patient';
+    
+    if (!isPatient) {
+      if (mounted) {
+        setIsLoading(false);
+        setDoctor(null);
+        setError(null);
+      }
+      return;
+    }
+
     setIsLoading(true);
 
     const fetchAssignedDoctor = async () => {

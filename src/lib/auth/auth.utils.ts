@@ -169,15 +169,21 @@ export function canAccessRoute(path: string, userRole: UserRole): boolean {
  * Get role-specific dashboard route
  */
 export function getRoleDashboardRoute(userRole: UserRole): string {
-  const roleDashboardRoutes: Record<UserRole, string> = {
+  const roleDashboardRoutes: Record<string, string> = {
     patient: '/patient/dashboard',
     doctor: '/doctor/dashboard',
     nurse: '/doctor/dashboard',
     admin: '/doctor/dashboard',
     center_manager: '/doctor/dashboard',
+    clinical_assistant: '/doctor/dashboard',
+    super_admin: '/doctor/dashboard',
+    platform_admin: '/doctor/dashboard',
+    clinical_admin: '/doctor/dashboard',
+    receptionist: '/doctor/dashboard',
   };
 
-  return roleDashboardRoutes[userRole] || '/doctor/dashboard';
+  const normalizedRole = (userRole || 'patient').toLowerCase();
+  return roleDashboardRoutes[normalizedRole] || '/doctor/dashboard';
 }
 
 /**

@@ -49,11 +49,11 @@ const transformTokenResponse = (response: any): AuthResponse => {
 
   // Create user object with fallback defaults
   const user: User = {
-    id: userData.user_id || '',
+    id: userData.user_id || userData.id || '',
     email: userData.email || '',
     firstName: userData.first_name || 'User',
     lastName: userData.last_name || '',
-    role: userData.role || 'patient',
+    role: userData.role || (Array.isArray(userData.roles) ? userData.roles[0] : userData.roles) || 'patient',
     isActive: userData.is_active !== false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
